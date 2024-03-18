@@ -198,7 +198,7 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
                        color : t_camlbrick_color;
                     }
     ;;
-    
+    asfas
     let brick_get (x, y, param : int * int * t_camlbrick_param) : t_brick_kind =
       if y < 0 
       then BK_empty
