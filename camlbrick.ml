@@ -193,16 +193,30 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
     
     
     (* Itération 1, 2, 3 et 4 *)
-    type t_camlbrick {
+    type t_camlbrick = {
                        kind : t_brick_kind;
-                       color : t_cambrick_color;
+                       color : t_camlbrick_color;
                     }
     ;;
     
-    let brick_get()
-    
-    
-    brick_get qui renvoie le type de brique à partir des coordonnées dans la zone de briques
+    let brick_get (x, y, param : int * int * t_camlbrick_param) : t_brick_kind =
+      if y < 0 
+      then BK_empty
+      else 
+        if y < param.world_empty_height
+        then BK_empty
+        else
+        let row : int = (y - param.world_empty_height) / param.brick_height in
+        if row mod 5 = 0 || row mod 5 = 1 
+        then BK_simple
+        else 
+          if row mod 5 = 2 || row mod 5 = 3
+          then BK_double
+          else BK_block
+        ;;
+          
+
+
     
     (*t_ball_size / t_brick_kind / t_cambrick_color *) 
     
