@@ -193,9 +193,18 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
     
     
     (* Itération 1, 2, 3 et 4 *)
-    type t_camlbrick = unit
+    type t_camlbrick {
+                       kind : t_brick_kind;
+                       color : t_cambrick_color;
+                    }
     ;;
     
+    let brick_get()
+    
+    
+    brick_get qui renvoie le type de brique à partir des coordonnées dans la zone de briques
+    
+    (*t_ball_size / t_brick_kind / t_cambrick_color *) 
     
     (**
       Cette fonction construit le paramétrage du jeu, avec des informations personnalisable avec les contraintes du sujet.
