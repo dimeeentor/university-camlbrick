@@ -103,8 +103,9 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
     
     
     (*----------------------------- ITÉRATION 1 ----------------------------- *)
-    
-    type t_vec2 = {dx : int; dy : int} ;; 
+
+type t_vec2 = {dx : int; dy : int} ;; 
+  
     
     (**
       Cette fonction permet de créer un vecteur 2D à partir de deux entiers.
@@ -116,9 +117,11 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
       @param y seconde composante du vecteur
       @return Renvoie le vecteur dont les composantes sont (x,y).
     *)
-    let make_vec2(x, y : int * int) : t_vec2 = 
-      {dx = x; dy = y}
-    ;;
+   
+let make_vec2(x, y : int * int) : t_vec2 = 
+  {dx = x; dy = y}
+;;
+
     
     (**
       Cette fonction renvoie un vecteur qui est la somme des deux vecteurs donnés en arguments.
@@ -127,9 +130,11 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
       @param b second vecteur
       @return Renvoie un vecteur égale à la somme des vecteurs.
     *)
-    let vec2_add(a,b : t_vec2 * t_vec2) : t_vec2 =
-      {dx = a.dx + b.dx; dy = a.dy + b.dy}
-    ;;
+   
+let vec2_add(a,b : t_vec2 * t_vec2) : t_vec2 =
+  {dx = a.dx + b.dx; dy = a.dy + b.dy}
+;;
+
      
     (**
       Cette fonction renvoie un vecteur égale à la somme d'un vecteur
@@ -148,10 +153,11 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
       @param y composante en y du second vecteur
       @return Renvoie un vecteur qui est la résultante du vecteur 
     *)
-    let vec2_add_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
-      {dx = a.dx + x; dy = a.dy + y}
-    ;;
-    
+
+let vec2_add_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
+  {dx = a.dx + x; dy = a.dy + y}
+;;
+
     
     (**
       Cette fonction calcul un vecteur où 
@@ -165,10 +171,11 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
       @param b second vecteur
       @return Renvoie un vecteur qui résulte de la multiplication des composantes. 
     *)
-    let vec2_mult(a,b : t_vec2 * t_vec2) : t_vec2 = 
-      {dx = a.dx * b.dx; dy = a.dy * b.dy}
-    ;;
-    
+
+let vec2_mult(a,b : t_vec2 * t_vec2) : t_vec2 = 
+  {dx = a.dx * b.dx; dy = a.dy * b.dy}
+;;
+   
     
     (**
       Cette fonction calcul la multiplication des composantes du vecteur a et du vecteur construit à partir de (x,y).
@@ -177,48 +184,63 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
     let vec2_mult_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
       vec2_mult(a, make_vec2(x,y))
     ;;
-      ]}
-        
+      ]} 
     *)
-    let vec2_mult_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
-      {dx = a.dx * x; dy = a.dy * y}
-    ;;
-    
+
+let vec2_mult_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
+  {dx = a.dx * x; dy = a.dy * y}
+;;
+  
     
     (* Itération 2 *)
     type t_ball = unit;;
     
     (* Itération 2 *)
-    type t_paddle = unit;;
-    
-    
+type t_paddle = {
+                size : t_paddle_size; 
+                position : int;        
+                }
+;;
+
+let make_paddle (size, position : t_paddle_size * int) : t_paddle = (*créer un nouveau t_paddle avec sa taille et la position de la raquette*)
+  {size = size; position = position} (*creer un nouveau t_paddle*)
+;;
     (* Itération 1, 2, 3 et 4 *)
-    type t_camlbrick = {
-                       kind : t_brick_kind;
-                       color : t_camlbrick_color;
+type t_camlbrick = {
+                    kind : t_brick_kind;
+                    color : t_camlbrick_color;
+                    pad : t_paddle;
                     }
-    ;;
+;;
     
-    let brick_get (x, y, param : int * int * t_camlbrick_param) : t_brick_kind =
-      if y < 0 
-      then BK_empty
+let brick_get (bricks, i , j : t_camlbrick array array * int * int) : t_brick_kind =
+  if i < 0 || j < 0 || i >= Array.length(bricks) || j >= Array.length(bricks.(0)) (*vérifie que x, y sont à l'intèrieur de bricks*)
+  then BK_empty 
+  else bricks.(i).(j).kind (*accede a bricks a x, y et renvoie son type*)
+;;
+
+let brick_hit (bricks, i, j : t_camlbrick array array * int * int) : unit = (*ne renvoie rien, modifie direct tableau bricks*)
+  if (i >= 0 && j >= 0 && i < Array.length(bricks) && j < Array.length(bricks.(0))) (*verifie si coordonée valide*)
+  then bricks.(i).(j) <- {kind = BK_empty; color = WHITE; pad = {size = PS_SMALL; position = 0}} (*met a jour bricks par une brique vide si la balle touche la brique*)
+  else ()
+;;
+        
+let brick_color(kind : t_brick_kind) : t_camlbrick_color =
+  if kind = BK_empty
+  then BLACK 
+  else 
+    if kind = BK_simple
+    then RED 
+    else
+      if kind = BK_double
+      then GREEN
       else 
-        if y < param.world_empty_height
-        then BK_empty
-        else
-        let row : int = (y - param.world_empty_height) / param.brick_height in
-        if row mod 5 = 0 || row mod 5 = 1 
-        then BK_simple
-        else 
-          if row mod 5 = 2 || row mod 5 = 3
-          then BK_double
-          else BK_block
-        ;;
-          
+        if kind =  BK_block
+        then BLUE
+        else YELLOW
+;;
 
-
-    
-    (*t_ball_size / t_brick_kind / t_cambrick_color *) 
+(*-----------------------------------------------------------------------------------------------------------------------------*)
     
     (**
       Cette fonction construit le paramétrage du jeu, avec des informations personnalisable avec les contraintes du sujet.
@@ -312,15 +334,19 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
     
     
     
-    let paddle_x(game : t_camlbrick) : int= 
-      (* Itération 2 *)
-      0
-    ;;
+let paddle_x(brick : t_camlbrick) : int =
+  brick.pad.position (*position horizontale de la raquette*)
+;;
+
+let paddle_size_pixel (brick : t_camlbrick) : int =
+  if brick.pad.size = PS_SMALL 
+  then 50 (*largeur en pixels pour une raquette small *)
+  else 
+    if brick.pad.size = PS_MEDIUM 
+    then 75 (*largeur en pixels pour une raquette medium *)
+    else 100 (*largeur en pixels pour une raquette big *)
+;;
     
-    let paddle_size_pixel(game : t_camlbrick) : int = 
-      (* Itération 2 *)
-      0
-    ;;
     
     let paddle_move_left(game : t_camlbrick) : unit = 
       (* Itération 2 *)
