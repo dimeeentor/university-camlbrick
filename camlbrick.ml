@@ -219,27 +219,38 @@ let brick_get (bricks, i , j : t_camlbrick array array * int * int) : t_brick_ki
   else bricks.(i).(j).kind (*accede a bricks a x, y et renvoie son type*)
 ;;
 
-let brick_hit (bricks, i, j : t_camlbrick array array * int * int) : unit = (*ne renvoie rien, modifie direct tableau bricks*)
-  if (i >= 0 && j >= 0 && i < Array.length(bricks) && j < Array.length(bricks.(0))) (*verifie si coordonée valide*)
-  then bricks.(i).(j) <- {kind = BK_empty; color = WHITE; pad = {size = PS_SMALL; position = 0}} (*met a jour bricks par une brique vide si la balle touche la brique*)
-  else ()
+let brick_hit (p_bricks, i, j : t_camlbrick array array * int * int) : unit =
+  if (i >= 0 && j >= 0 && i < Array.length(p_bricks) && j < Array.length(p_bricks.(0))) 
+  then
+     if p_bricks.(i).(j).kind = BK_simple 
+     then p_bricks.(i).(j) <- {kind = BK_empty; color = BLACK}
+       else 
+         if p_bricks.(i).(j).kind = BK_double 
+         then p_bricks.(i).(j) <- {kind = BK_simple; color = YELLOW}
+         else 
+           if p_bricks.(i).(j).kind = BK_bonus 
+           then p_bricks.(i).(j) <- {kind = BK_empty; color = BLACK}
+           else 
+             if p_bricks.(i).(j).kind = BK_block 
+             then p_bricks.(i).(j) <- {kind = BK_block; color = WHITE}
+             else
+             ()
 ;;
         
-let brick_color(kind : t_brick_kind) : t_camlbrick_color =
-  if kind = BK_empty
-  then BLACK 
+let brick_color (brick_kind : t_brick_kind) : t_camlbrick_color =
+  if brick_kind = BK_simple 
+  then YELLOW
   else 
-    if kind = BK_simple
-    then RED 
-    else
-      if kind = BK_double
-      then GREEN
-      else 
-        if kind =  BK_block
-        then BLUE
-        else YELLOW
-;;
-
+   if brick_kind = BK_double 
+   then BLUE
+   else 
+     if brick_kind = BK_bonus 
+     then GREEN
+     else 
+       if brick_kind = BK_block
+       then WHITE
+       else BLACK
+  ;;
 (*-----------------------------------------------------------------------------------------------------------------------------*)
     
     (**
