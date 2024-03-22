@@ -202,55 +202,15 @@ type t_paddle = {
                 }
 ;;
 
-let make_paddle (size, position : t_paddle_size * int) : t_paddle = (*créer un nouveau t_paddle avec sa taille et la position de la raquette*)
-  {size = size; position = position} (*creer un nouveau t_paddle*)
-;;
     (* Itération 1, 2, 3 et 4 *)
 type t_camlbrick = {
                     kind : t_brick_kind;
                     color : t_camlbrick_color;
                     pad : t_paddle;
+                    param : t_camlbrick_param;
                     }
 ;;
     
-let brick_get (bricks, i , j : t_camlbrick array array * int * int) : t_brick_kind =
-  if i < 0 || j < 0 || i >= Array.length(bricks) || j >= Array.length(bricks.(0)) (*vérifie que x, y sont à l'intèrieur de bricks*)
-  then BK_empty 
-  else bricks.(i).(j).kind (*accede a bricks a x, y et renvoie son type*)
-;;
-
-let brick_hit (p_bricks, i, j : t_camlbrick array array * int * int) : unit =
-  if (i >= 0 && j >= 0 && i < Array.length(p_bricks) && j < Array.length(p_bricks.(0))) 
-  then
-     if p_bricks.(i).(j).kind = BK_simple 
-     then p_bricks.(i).(j) <- {kind = BK_empty; color = BLACK}
-       else 
-         if p_bricks.(i).(j).kind = BK_double 
-         then p_bricks.(i).(j) <- {kind = BK_simple; color = YELLOW}
-         else 
-           if p_bricks.(i).(j).kind = BK_bonus 
-           then p_bricks.(i).(j) <- {kind = BK_empty; color = BLACK}
-           else 
-             if p_bricks.(i).(j).kind = BK_block 
-             then p_bricks.(i).(j) <- {kind = BK_block; color = WHITE}
-             else
-             ()
-;;
-        
-let brick_color (brick_kind : t_brick_kind) : t_camlbrick_color =
-  if brick_kind = BK_simple 
-  then YELLOW
-  else 
-   if brick_kind = BK_double 
-   then BLUE
-   else 
-     if brick_kind = BK_bonus 
-     then GREEN
-     else 
-       if brick_kind = BK_block
-       then WHITE
-       else BLACK
-  ;;
 (*-----------------------------------------------------------------------------------------------------------------------------*)
     
     (**
@@ -279,10 +239,9 @@ let brick_color (brick_kind : t_brick_kind) : t_camlbrick_color =
       @param game jeu en cours d'exécution.
       @return Renvoie le paramétrage actuel.
       *)
-    let param_get(game : t_camlbrick) : t_camlbrick_param =
-      (* Itération 1 *)
-      make_camlbrick_param()
-    ;;
+let param_get(game : t_camlbrick) : t_camlbrick_param =
+  game.param
+;;
     
     (**
       Cette fonction crée une nouvelle structure qui initialise le monde avec aucune brique visible.
@@ -299,10 +258,10 @@ let brick_color (brick_kind : t_brick_kind) : t_camlbrick_color =
       Cette fonction crée une raquette par défaut au milieu de l'écran et de taille normal.  
       @deprecated Cette fonction est là juste pour le debug ou pour débuter certains traitements de test.
     *)
-    let make_paddle() : t_paddle =
-      (* Itération 2 *)
-     ()
-    ;;
+
+    let make_paddle (size, position : t_paddle_size * int) : t_paddle = (*créer un nouveau t_paddle avec sa taille et la position de la raquette*)
+  {size = size; position = position} (*creer un nouveau t_paddle*)
+;;
     
     let make_ball(x,y, size : int * int * int) : t_ball =
       (* Itération 3 *)
@@ -326,23 +285,43 @@ let brick_color (brick_kind : t_brick_kind) : t_camlbrick_color =
       "INCONNU"
     ;;
     
-    let brick_get(game, i, j : t_camlbrick * int * int)  : t_brick_kind =
-      (* Itération 1 *)
-      if i = 1 && j = 1
-      then BK_empty
-      else BK_simple 
-    ;;
+let brick_get (bricks, i , j : t_camlbrick array array * int * int) : t_brick_kind =
+  if i < 0 || j < 0 || i >= Array.length(bricks) || j >= Array.length(bricks.(0)) (*vérifie que x, y sont à l'intèrieur de bricks*)
+  then BK_empty 
+  else bricks.(i).(j).kind (*accede a bricks a x, y et renvoie son type*)
+;;
     
-    let brick_hit(game, i, j : t_camlbrick * int * int)  : t_brick_kind = 
-      (* Itération 1 *)
-      BK_empty
-    ;;
-    
-    let brick_color(game,i,j : t_camlbrick * int * int) : t_camlbrick_color = 
-      (* Itération 1 *)
-      ORANGE
-    ;;
-    
+let brick_hit (p_bricks, i, j : t_camlbrick array array * int * int) : unit =
+  if (i >= 0 && j >= 0 && i < Array.length(p_bricks) && j < Array.length(p_bricks.(0))) 
+  then
+    if p_bricks.(i).(j).kind = BK_simple 
+    then p_bricks.(i).(j) <- {kind = BK_empty; color = BLACK}
+    else 
+      if p_bricks.(i).(j).kind = BK_double 
+      then p_bricks.(i).(j) <- {kind = BK_simple; color = YELLOW}
+      else 
+        if p_bricks.(i).(j).kind = BK_bonus 
+        then p_bricks.(i).(j) <- {kind = BK_empty; color = BLACK}
+        else 
+          if p_bricks.(i).(j).kind = BK_block 
+          then p_bricks.(i).(j) <- {kind = BK_block; color = WHITE}
+          else ()
+;;
+            
+let brick_color (brick_kind : t_brick_kind) : t_camlbrick_color =
+  if brick_kind = BK_simple 
+  then YELLOW
+  else 
+    if brick_kind = BK_double 
+    then BLUE
+    else 
+      if brick_kind = BK_bonus 
+      then GREEN
+      else 
+        if brick_kind = BK_block
+        then WHITE
+        else BLACK
+;;
     
     
 let paddle_x(brick : t_camlbrick) : int =
