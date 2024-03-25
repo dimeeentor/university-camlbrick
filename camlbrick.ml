@@ -202,11 +202,13 @@ type t_paddle = {
                 }
 ;;
 
-    (* Itération 1, 2, 3 et 4 *)
+(**
+   
+*)
 type t_camlbrick = {
                     kind : t_brick_kind;
                     color : t_camlbrick_color;
-                    pad : t_paddle;
+                    (*pad : t_paddle;*)
                     param : t_camlbrick_param;
                     }
 ;;
@@ -263,9 +265,9 @@ let param_get(game : t_camlbrick) : t_camlbrick_param =
   {size = size; position = position} (*creer un nouveau t_paddle*)
 ;;
     
-    let make_ball(x,y, size : int * int * int) : t_ball =
+   let make_ball(x,y, size : int * int * int) : t_ball =
       (* Itération 3 *)
-      ()
+      
     ;;
     
     
@@ -285,40 +287,52 @@ let param_get(game : t_camlbrick) : t_camlbrick_param =
       "INCONNU"
     ;;
     
-let brick_get (bricks, i , j : t_camlbrick array array * int * int) : t_brick_kind =
-  if i < 0 || j < 0 || i >= Array.length(bricks) || j >= Array.length(bricks.(0)) (*vérifie que x, y sont à l'intèrieur de bricks*)
-  then BK_empty 
-  else bricks.(i).(j).kind (*accede a bricks a x, y et renvoie son type*)
-;;
+(**
+    Cette fonction renvoie le type de brique à partir des coordonnées dans la zone de briques
+    en vérifiant si les paramètres se trouve à l'intérieur du tableau bricks
     
-let brick_hit (p_bricks, i, j : t_camlbrick array array * int * int) : unit =
-  if (i >= 0 && j >= 0 && i < Array.length(p_bricks) && j < Array.length(p_bricks.(0))) 
-  then
-    if p_bricks.(i).(j).kind = BK_simple 
-    then p_bricks.(i).(j) <- {kind = BK_empty; color = BLACK}
-    else 
-      if p_bricks.(i).(j).kind = BK_double 
-      then p_bricks.(i).(j) <- {kind = BK_simple; color = YELLOW}
-      else 
-        if p_bricks.(i).(j).kind = BK_bonus 
-        then p_bricks.(i).(j) <- {kind = BK_empty; color = BLACK}
-        else 
-          if p_bricks.(i).(j).kind = BK_block 
-          then p_bricks.(i).(j) <- {kind = BK_block; color = WHITE}
-          else ()
+    @autor Edouard GONET 
+    @param Bricks représente une matrice de type t_camlbrick array array
+    @param i coordonnée d'une brique dans le tableau 
+    @param j coordonnée d'une brique dans le tableau
+    @return renvoie le type de brique à partir des coordonnées dans la zone de briques
+    *)
+
+let brick_get(game, i , j : t_brick_kind array array * int * int) : t_brick_kind =
+  if i < 0 || j < 0 || i >= Array.length(game) || j >= Array.length(game.(0)) (*vérifie que i, j sont à l'intèrieur de bricks*)
+  then BK_empty 
+  else game.(i).(j)(*accede a bricks a x, y et renvoie son type*)
 ;;
-            
-let brick_color (brick_kind : t_brick_kind) : t_camlbrick_color =
-  if brick_kind = BK_simple 
+ 
+let brick_hit(game, i, j : t_brick_kind array array * int * int) : t_brick_kind =
+  if (i >= 0 && j >= 0 && i < Array.length(game) && j < Array.length(game.(0))) 
+  then
+    if game.(i).(j) = BK_simple 
+    then (game.(i).(j) <- BK_empty; BK_empty)
+    else 
+      if game.(i).(j) = BK_double 
+      then (game.(i).(j) <- BK_simple; BK_simple)
+      else 
+        if game.(i).(j) = BK_bonus 
+        then (game.(i).(j) <- BK_empty; BK_empty)
+        else 
+          if game.(i).(j) = BK_block 
+          then (game.(i).(j) <- BK_block; BK_block )
+          else BK_empty
+  else BK_empty
+;;
+       
+let brick_color(game, i, j : t_brick_kind array array * int * int) : t_camlbrick_color =
+  if game.(i).(j) = BK_simple 
   then YELLOW
   else 
-    if brick_kind = BK_double 
+    if game.(i).(j) = BK_double 
     then BLUE
     else 
-      if brick_kind = BK_bonus 
+      if game.(i).(j) = BK_bonus 
       then GREEN
       else 
-        if brick_kind = BK_block
+        if game.(i).(j) = BK_block
         then WHITE
         else BLACK
 ;;
