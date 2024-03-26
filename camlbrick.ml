@@ -195,11 +195,14 @@ let vec2_mult_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
   {dx = a.dx * x; dy = a.dy * y}
 ;;
   
+  
+type t_ball = {
+              position : t_vec2;
+              frame : t_vec2;
+              size : int;
+              }
+;; 
     
-    (* Itération 2 *)
-type t_ball = unit;;
-    
-    (* Itération 2 *)
 type t_paddle = {
                 size : t_paddle_size; 
                 position : int;        
@@ -215,6 +218,7 @@ type t_camlbrick = {
                     kind : t_brick_kind;
                     color : t_camlbrick_color;
                     param : t_camlbrick_param;
+                    ball : t_ball list;
                     }
 ;;
     
@@ -402,11 +406,25 @@ let brick_color(game, i, j : t_brick_kind array array * int * int) : t_camlbrick
         else BLACK
 ;;
     
+(**
+  Cette fonction renvoie la position gauche du rectangle sympolisant la position de la raquette 
+
+  @author 
+  @param brick
+  @return renvoie la  position gauche du rectangle qui symbolise la raquette
+*)
     
 let paddle_x(brick : t_camlbrick) : int =
   brick.pad.position (*position horizontale de la raquette*)
 ;;
 
+(**
+  Cette fonction renvie la largeur en pixel du rectangle 
+
+  @author
+  @param brick
+  @return renvoie la largeur du rectangle 
+*)
 let paddle_size_pixel (brick : t_camlbrick) : int =
   if brick.pad.size = PS_SMALL 
   then 50 (*largeur en pixels pour une raquette small *)
@@ -416,7 +434,7 @@ let paddle_size_pixel (brick : t_camlbrick) : int =
     else 100 (*largeur en pixels pour une raquette big *)
 ;;
     
-    
+(*-------------------------------------------------------------------------------------------------*)
     let paddle_move_left(game : t_camlbrick) : unit = 
       (* Itération 2 *)
       ()
@@ -427,10 +445,27 @@ let paddle_size_pixel (brick : t_camlbrick) : int =
       ()
      ;;
     
-    let has_ball(game : t_camlbrick) : bool =
-      (* Itération 2 *)
-      false
-    ;;
+(*-------------------------------------------------------------------------------------------------*)
+
+let has_ball(game : t_camlbrick) : bool =
+  let rec check_ball(lst : int list) = 
+    if lst = []
+    then false
+    else 
+      if List.hd(lst = game)
+      then true 
+      else has_ball game (List.hd(lst))
+;;
+
+let rec element_present x lst =
+  if lst = [] then
+    false
+  else if List.hd lst = x then
+    true
+  else
+    element_present x (List.tl lst)
+
+
     
     let balls_count(game : t_camlbrick) : int =
       (* Itération 2 *)
