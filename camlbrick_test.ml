@@ -5,6 +5,7 @@ open CPtestfonc;;
 #use "camlbrick.ml";;
 
 (**
+  test_fonc_make_vec2 teste la fonction make_vec2 avec des valeurs positives. Si le résultat ne correspond pas au résultat attendu {dx = 9; dy = 3}, cela déclenchera un échec d'assertion.
   @autor Hasna AMID
   @return teste si la fonction make_vec2 fonctionne normalement avec les valeurs attendues
 *)
@@ -15,6 +16,7 @@ let test_fonc_make_vec2 () : unit =
 ;;
 
 (**
+  crée vec1, vec2 avec les valeurs. Si le résultat ne correspond pas au résultat attendu {dx = 7; dy = 4}, cela déclenchera un échec d'assertion.
   @autor Dmytro HONCHARENKO
   @return teste si la fonction vec2_add fonctionne normalement avec les valeurs attendues
 *)
@@ -27,6 +29,7 @@ let test_fonc_vec2_add () : unit =
 ;;
 
 (**
+  crée un vecteur vec et scalar_x, scalar_y. Si le résultat ne correspond pas au résultat attendu {dx = 4; dy = 6}, cela déclenchera un échec d'assertion.
       @autor Aya GUEMMIE
       @return teste si la fonction vec2_sub fonctionne normalement avec les valeurs attendues
 *)
@@ -67,7 +70,7 @@ let test_fonc_vec2_mult_scalar () : unit =
       assert_equals_result_m ("multiplication scalaire", { dx = 18; dy = 21 }, res);;
 
 (**
-  param_get prend en entrée un jeu et renvoie les paramètres du jeu.
+  test_fonc_param_get teste la fonction param_get avec les valeurs attendues. Si le résultat ne correspond pas au résultat attendu, cela déclenchera un échec d'assertion.
   @autor Hasna AMID
   @return teste si la fonction param_get fonctionne normalement avec les valeurs attendues
 *)
@@ -88,6 +91,7 @@ let test_fonc_param_get () : unit =
    | Test make camlbrick |
 ------------------------------------------------*)
 (**
+    La fonction test_make_camlbrick teste la fonction make_camlbrick. Elle vérifie si les valeurs des différents paramètres du jeu correspondent aux valeurs attendues après l'appel de la fonction make_camlbrick. Les valeurs attendues sont les suivantes :
     La position initiale de la balle est (0, 0).
     La vitesse initiale de la balle est (0, 0).
     La taille de la balle est fixée à [BS_MEDIUM].
@@ -166,9 +170,7 @@ let test_make_camlbrick () : unit =
 ------------------------------------------------*)
 
 (**
-  La fonction test_brick_hit teste brick_hit avec deux cas de test différents. Le premier cas teste une brique simple et
-  vérifie si elle devient une brique vide après avoir été touchée. Le deuxième cas teste une brique double et vérifie si
-  elle devient une brique simple après avoir été touchée.
+  Le test `test_brick_hit` évalue la fonction `brick_hit`, prenant une matrice de briques `game` et les coordonnées `(i, j)` d'une brique. Elle renvoie le type de brique après impact de la balle, testant différentes situations comme des coordonnées valides, invalides ou hors de la matrice.
 
   @author Dmytro HONCHARENKO
   @return teste si la fonction brick_hit fonctionne normalement avec les valeurs attendues
@@ -192,8 +194,7 @@ let test_brick_hit () : unit =
 
 (**
   Cette fonction teste la fonction brick_color avec plusieurs cas de test pour différents types de briques.
-  Chaque cas de test vérifie si la couleur retournée par brick_color correspond à celle attendue pour une brique spécifique
-  à des coordonnées données.
+  Chaque cas de test vérifie si la couleur retournée par brick_color correspond à celle attendue pour une brique spécifique à des coordonnées données.
 
   @author Edouard GONET
   @return teste si la fonction brick_color fonctionne normalement avec les valeurs attendues
