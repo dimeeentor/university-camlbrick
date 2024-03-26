@@ -10,7 +10,7 @@ Le principe du jeu de casse-brique consiste à faire disparaître toutes les bri
 en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utilisateur.
 
 @author Edouard GONET
-@author Dmytro HOCHARENCKO
+@author Dmytro HONCHARENKO
 @author Aya GUEMMIE
 @author Hasna AMID 
 
@@ -124,7 +124,7 @@ let make_vec2(x, y : int * int) : t_vec2 =
 (**
   Cette fonction renvoie un vecteur qui est la somme des deux vecteurs donnés en arguments.
 
-  @autor Dmytro Honcharenko
+  @autor Dmytro HONCHARENKO
   @param a premier vecteur
   @param b second vecteur
   @return Renvoie un vecteur égale à la somme des vecteurs.
@@ -145,7 +145,7 @@ let vec2_add(a,b : t_vec2 * t_vec2) : t_vec2 =
     ;;
   ]}
     
-  @autor Dmytro Honcharenko
+  @autor Dmytro HONCHARENKO
   @param a premier vecteur
   @param x composante en x du second vecteur
   @param y composante en y du second vecteur

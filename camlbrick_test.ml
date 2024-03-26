@@ -4,7 +4,9 @@
 open CPtestfonc;;
 #use "camlbrick.ml";;
 
-(*------------------------------------------------| Test brick_get |------------------------------------------------*)
+(*------------------------------------------------
+   | Test brick_get |
+------------------------------------------------*)
 
 (**
   La fonction test_brick_get teste la fonction brick_get, qui prend en entrée une matrice de briques game ainsi que les 
@@ -49,14 +51,16 @@ open CPtestfonc;;
   assert_true(test_is_success(res_6))
  ;; 
 
-(*------------------------------------------------| Test Brick_hit |------------------------------------------------*)
+(*------------------------------------------------
+   | Test Brick_hit |
+------------------------------------------------*)
 
 (**
   La fonction test_brick_hit teste brick_hit avec deux cas de test différents. Le premier cas teste une brique simple et 
   vérifie si elle devient une brique vide après avoir été touchée. Le deuxième cas teste une brique double et vérifie si 
   elle devient une brique simple après avoir été touchée.
 
-  @author Dmytro HONCHARENKCO
+  @author Dmytro HONCHARENKO
   @return teste si la fonction brick_hit fonctionne normalement avec les valeurs attendues 
 *)
 
@@ -73,7 +77,9 @@ let test_brick_hit () : unit =
   assert_true(test_is_success(res_2))
 ;; 
 
-(*------------------------------------------------| Test Brick_color |------------------------------------------------*)
+(*------------------------------------------------
+   | Test Brick_color |
+------------------------------------------------*)
 
 (**
   Cette fonction teste la fonction brick_color avec plusieurs cas de test pour différents types de briques. 
@@ -107,7 +113,16 @@ let test_brick_color () : unit =
   assert_true(test_is_success(res_4))
 ;; 
 
-(*------------------------------------------------| Test string_of_gamestate |------------------------------------------------*)
+(*------------------------------------------------
+   | Test string_of_gamestate |
+------------------------------------------------*)
+(** 
+  La fonction test_string_of_gamestate teste la fonction string_of_gamestate. Elle vérifie si la représentation sous forme de chaîne de l'état du jeu correspond aux valeurs attendues pour les différents paramètres du jeu. Elle vérifie également que l'état du jeu est correctement mis à jour après modification des paramètres.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @return teste si la fonction string_of_gamestate fonctionne normalement avec les valeurs attendues
+*)
 
 let test_string_of_gamestate (status : t_test_status) : unit =
 
@@ -156,7 +171,9 @@ let test_string_of_gamestate (status : t_test_status) : unit =
     )
 ;;
 
-(*------------------------------------------------| Test report |------------------------------------------------*)
+(*------------------------------------------------
+   | Test report |
+------------------------------------------------*)
 
 test_reset_report();;
 
