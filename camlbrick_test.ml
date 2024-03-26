@@ -283,6 +283,14 @@ let test_string_of_gamestate (status : t_test_status) : unit =
 
 test_reset_report();;
 
+test_fonc_make_vec2 ();;
+test_fonc_vec2_add ();;
+test_fonc_vec2_add_scalar ();;
+test_fonc_vec2_mult ();;
+test_fonc_vec2_mult_scalar ();;
+test_fonc_param_get ();;
+test_make_camlbrick ();;
+test_string_of_gamestate (TEST_SUCCESS);;
 test_brick_get ();;
 test_brick_hit ();;
 test_brick_color ();;
