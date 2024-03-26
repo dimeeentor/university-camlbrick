@@ -9,8 +9,10 @@ aspect visuel! Vous pouvez utiliser le mode console.
 Le principe du jeu de casse-brique consiste à faire disparaître toutes les briques d'un niveau
 en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utilisateur.
 
-@author Hakim Ferrier-Belhaouari
-@author Agnès Arnould
+@author Edouard GONET
+@author Dmytro HOCHARENCKO
+@author Aya GUEMMIE
+@author Hasna AMID 
 
 @version 1
 *)
@@ -100,92 +102,94 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
     *)
     type t_gamestate = GAMEOVER | PLAYING | PAUSING;;
     
-    
-    
-    (*----------------------------- ITÉRATION 1 ----------------------------- *)
+  
 
 type t_vec2 = {dx : int; dy : int} ;; 
   
+(**
+  Cette fonction permet de créer un vecteur 2D à partir de deux entiers.
+  Les entiers représentent la composante en X et en Y du vecteur.
     
-    (**
-      Cette fonction permet de créer un vecteur 2D à partir de deux entiers.
-      Les entiers représentent la composante en X et en Y du vecteur.
-    
-      Vous devez modifier cette fonction.
-      @autor Edouard GONET
-      @param x première composante du vecteur
-      @param y seconde composante du vecteur
-      @return Renvoie le vecteur dont les composantes sont (x,y).
-    *)
+  Vous devez modifier cette fonction.
+  @autor Edouard GONET
+  @param x première composante du vecteur
+  @param y seconde composante du vecteur
+  @return Renvoie le vecteur dont les composantes sont (x,y).
+*)
    
 let make_vec2(x, y : int * int) : t_vec2 = 
   {dx = x; dy = y}
 ;;
-
     
-    (**
-      Cette fonction renvoie un vecteur qui est la somme des deux vecteurs donnés en arguments.
-      @autor Dmytro Honcharenko
-      @param a premier vecteur
-      @param b second vecteur
-      @return Renvoie un vecteur égale à la somme des vecteurs.
-    *)
+(**
+  Cette fonction renvoie un vecteur qui est la somme des deux vecteurs donnés en arguments.
+
+  @autor Dmytro Honcharenko
+  @param a premier vecteur
+  @param b second vecteur
+  @return Renvoie un vecteur égale à la somme des vecteurs.
+*)
    
 let vec2_add(a,b : t_vec2 * t_vec2) : t_vec2 =
   {dx = a.dx + b.dx; dy = a.dy + b.dy}
 ;;
-
      
-    (**
-      Cette fonction renvoie un vecteur égale à la somme d'un vecteur
-      donné en argument et un autre vecteur construit à partir de (x,y).
+(**
+  Cette fonction renvoie un vecteur égale à la somme d'un vecteur
+  donné en argument et un autre vecteur construit à partir de (x,y).
       
-      Cette fonction est une optimisation du code suivant (que vous ne devez pas faire en l'état):
-      {[
+  Cette fonction est une optimisation du code suivant (que vous ne devez pas faire en l'état):
+  {[
     let vec2_add_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
       vec2_add(a, make_vec2(x,y))
     ;;
-      ]}
+  ]}
     
-      @autor Dmytro Honcharenko
-      @param a premier vecteur
-      @param x composante en x du second vecteur
-      @param y composante en y du second vecteur
-      @return Renvoie un vecteur qui est la résultante du vecteur 
-    *)
+  @autor Dmytro Honcharenko
+  @param a premier vecteur
+  @param x composante en x du second vecteur
+  @param y composante en y du second vecteur
+  @return Renvoie un vecteur qui est la résultante du vecteur 
+*)
 
 let vec2_add_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
   {dx = a.dx + x; dy = a.dy + y}
 ;;
-
     
-    (**
-      Cette fonction calcul un vecteur où 
-      ses composantes sont la résultante de la multiplication  des composantes de deux vecteurs en entrée.
-      Ainsi,
-        {[
-        c_x = a_x * b_x
-        c_y = a_y * b_y
-        ]}
-      @param a premier vecteur
-      @param b second vecteur
-      @return Renvoie un vecteur qui résulte de la multiplication des composantes. 
-    *)
+(**
+  Cette fonction calcul un vecteur où 
+  ses composantes sont la résultante de la multiplication  des composantes de deux vecteurs en entrée.
+  Ainsi,
+  {[
+    c_x = a_x * b_x
+    c_y = a_y * b_y
+  ]}
+
+  @author Hasna AMID 
+  @param a premier vecteur
+  @param b second vecteur
+  @return Renvoie un vecteur qui résulte de la multiplication des composantes. 
+*)
 
 let vec2_mult(a,b : t_vec2 * t_vec2) : t_vec2 = 
   {dx = a.dx * b.dx; dy = a.dy * b.dy}
 ;;
    
-    
-    (**
-      Cette fonction calcul la multiplication des composantes du vecteur a et du vecteur construit à partir de (x,y).
-      Cette fonction est une optimisation du code suivant (que vous ne devez pas faire en l'état):
-      {[
+(**
+  Cette fonction calcul la multiplication des composantes du vecteur a et du vecteur construit à partir de (x,y).
+  Cette fonction est une optimisation du code suivant (que vous ne devez pas faire en l'état):
+  {[
     let vec2_mult_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
       vec2_mult(a, make_vec2(x,y))
     ;;
-      ]} 
-    *)
+  ]}
+
+  @author Aya GUEMMIE
+  @param a vecteur de type t_vec2
+  @param x entier qui va multiplier le scalaire du vecteur a 
+  @param y entier qui va multiplier le scalaire du vecteur a 
+  @return retourne un nouveau vecteur avec la multiplications des correspondantes du vecteurs a 
+*)
 
 let vec2_mult_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
   {dx = a.dx * x; dy = a.dy * y}
@@ -193,7 +197,7 @@ let vec2_mult_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
   
     
     (* Itération 2 *)
-    type t_ball = unit;;
+type t_ball = unit;;
     
     (* Itération 2 *)
 type t_paddle = {
@@ -203,65 +207,86 @@ type t_paddle = {
 ;;
 
 (**
-   
+   Stock les paramètres de jeux. Ce type est utile dans la modélisation des opérations géométriques 2D, comme la modélisation 
+   de mouvement dans le jeux ou même le rendu graphique.
 *)
+
 type t_camlbrick = {
                     kind : t_brick_kind;
                     color : t_camlbrick_color;
-                    (*pad : t_paddle;*)
                     param : t_camlbrick_param;
                     }
 ;;
     
-(*-----------------------------------------------------------------------------------------------------------------------------*)
+(**
+  Cette fonction construit le paramétrage du jeu, avec des informations personnalisable avec les contraintes du sujet.
+  Il n'y a aucune vérification et vous devez vous assurer que les valeurs données en argument soient cohérentes.
+  @return Renvoie un paramétrage de jeu par défaut      
+*)
+
+let make_camlbrick_param() : t_camlbrick_param = 
+  {
+    world_width = 800;
+    world_bricks_height = 600;
+    world_empty_height = 200;
+      
+    brick_width = 40;
+    brick_height = 20;
+      
+    paddle_init_width = 100;
+    paddle_init_height = 20;
+      
+    time_speed = ref 20;
+  }
+;;
     
-    (**
-      Cette fonction construit le paramétrage du jeu, avec des informations personnalisable avec les contraintes du sujet.
-      Il n'y a aucune vérification et vous devez vous assurer que les valeurs données en argument soient cohérentes.
-      @return Renvoie un paramétrage de jeu par défaut      
-    *)
-    let make_camlbrick_param() : t_camlbrick_param = {
-       world_width = 800;
-       world_bricks_height = 600;
-       world_empty_height = 200;
     
-       brick_width = 40;
-       brick_height = 20;
-    
-       paddle_init_width = 100;
-       paddle_init_height = 20;
-    
-       time_speed = ref 20;
-    }
-    ;;
-    
-    
-    (**
-      Cette fonction extrait le paramétrage d'un jeu à partir du jeu donné en argument.
-      @param game jeu en cours d'exécution.
-      @return Renvoie le paramétrage actuel.
-      *)
+(**
+  Cette fonction extrait le paramétrage d'un jeu à partir du jeu donné en argument.
+
+  @author Aya GUEMMIE 
+  @param game jeu en cours d'exécution.
+  @return Renvoie le paramétrage actuel.
+*)
+
 let param_get(game : t_camlbrick) : t_camlbrick_param =
   game.param
 ;;
     
-    (**
-      Cette fonction crée une nouvelle structure qui initialise le monde avec aucune brique visible.
-      Une raquette par défaut et une balle par défaut dans la zone libre.
-      @return Renvoie un jeu correctement initialisé
-    *)
-    let make_camlbrick() : t_camlbrick = 
-      (* Itération 1, 2, 3 et 4 *)
-      ()
-    ;;
-    
-    
-    (**
-      Cette fonction crée une raquette par défaut au milieu de l'écran et de taille normal.  
-      @deprecated Cette fonction est là juste pour le debug ou pour débuter certains traitements de test.
-    *)
+(**
+  Cette fonction crée une nouvelle structure qui initialise le monde avec aucune brique visible.
+  Une raquette par défaut et une balle par défaut dans la zone libre.
 
-    let make_paddle (size, position : t_paddle_size * int) : t_paddle = (*créer un nouveau t_paddle avec sa taille et la position de la raquette*)
+  @author Edouard GONET
+  @return Renvoie un jeu correctement initialisé
+*)
+
+let make_camlbrick() : t_camlbrick = 
+  {
+    kind = BK_empty;  
+    color = BLACK;    
+    param = {
+              world_width = 800;
+              world_bricks_height = 600;
+              world_empty_height = 200;
+              
+              brick_width = 40;
+              brick_height = 20;
+              
+              paddle_init_width = 100;
+              paddle_init_height = 20;
+              
+              time_speed = ref 20;
+            }          
+    }
+;;
+      
+(**
+  Cette fonction crée une raquette par défaut au milieu de l'écran et de taille normal.  
+  @deprecated Cette fonction est là juste pour le debug ou pour débuter certains traitements de test.
+*)
+
+let make_paddle (size, position : t_paddle_size * int) : t_paddle = (*créer un nouveau t_paddle avec sa taille et la position de la raquette*)
   {size = size; position = position} (*creer un nouveau t_paddle*)
 ;;
     
@@ -273,37 +298,67 @@ let param_get(game : t_camlbrick) : t_camlbrick_param =
     
     
     
-    (**
-      Fonction utilitaire qui permet de traduire l'état du jeu sous la forme d'une chaîne de caractère.
-      Cette fonction est appelée à chaque frame, et est affichée directement dans l'interface graphique.
+(**
+  Fonction utilitaire qui permet de traduire l'état du jeu sous la forme d'une chaîne de caractère.
+  Cette fonction est appelée à chaque frame, et est affichée directement dans l'interface graphique.
       
-      Vous devez modifier cette fonction.
+  Vous devez modifier cette fonction.
     
-      @param game représente le jeu en cours d'exécution.
-      @return Renvoie la chaîne de caractère représentant l'état du jeu.
-    *)
-    let string_of_gamestate(game : t_camlbrick) : string =
-      (* Itération 1,2,3 et 4 *)
-      "INCONNU"
-    ;;
+  @autho Hasna AMID
+  @param game représente le jeu en cours d'exécution.
+  @return Renvoie la chaîne de caractère représentant l'état du jeu.
+*)
+
+let string_of_gamestate(game : t_camlbrick) : string = (* Itération 1,2,3 et 4 *)
+  let param = param_get game in  (* Récupération des paramètres du jeu *)
+  let world_width = param.world_width in  (* Largeur du monde *)
+  let world_bricks_height = param.world_bricks_height in  (* Hauteur de la zone de dessin des briques *)
+  let world_empty_height = param.world_empty_height in  (* Hauteur de la zone vide pour que la balle puisse évoluer *)
+  let brick_width = param.brick_width in  (* Largeur d'une brique *)
+  let brick_height = param.brick_height in  (* Hauteur d'une brique *)
+  let paddle_init_width = param.paddle_init_width in  (* Largeur initiale de la raquette *)
+  let paddle_init_height = param.paddle_init_height in  (* Hauteur initiale de la raquette *)
+  let time_speed = !(param.time_speed) in  (* Durée approximative d'une frame *)
+
+  (* Construction de la chaîne de caractères représentant l'état du jeu *)
+  "World width: " ^ string_of_int world_width ^ "\n" ^ (*^ "\n" ^ est utilisé pour ajouter un saut de ligne entre chaque ligne de la chaîne de caractères*)
+  "World bricks height: " ^ string_of_int world_bricks_height ^ "\n" ^
+  "World empty height: " ^ string_of_int world_empty_height ^ "\n" ^
+  "Brick width: " ^ string_of_int brick_width ^ "\n" ^
+  "Brick height: " ^ string_of_int brick_height ^ "\n" ^
+  "Paddle init width: " ^ string_of_int paddle_init_width ^ "\n" ^
+  "Paddle init height: " ^ string_of_int paddle_init_height ^ "\n" ^
+  "Time speed: " ^ string_of_int time_speed
+;;
     
 (**
-    Cette fonction renvoie le type de brique à partir des coordonnées dans la zone de briques
-    en vérifiant si les paramètres se trouve à l'intérieur du tableau bricks
+  Cette fonction renvoie le type de brique à partir des coordonnées dans la zone de briques
+  en vérifiant si les paramètres se trouve à l'intérieur du tableau bricks.
     
-    @autor Edouard GONET 
-    @param Bricks représente une matrice de type t_camlbrick array array
-    @param i coordonnée d'une brique dans le tableau 
-    @param j coordonnée d'une brique dans le tableau
-    @return renvoie le type de brique à partir des coordonnées dans la zone de briques
-    *)
+  @autor Edouard GONET 
+  @param game représente une matrice de type t_brick_kind array array
+  @param i coordonnée d'une brique dans le tableau 
+  @param j coordonnée d'une brique dans le tableau
+  @return renvoie le type de brique à partir des coordonnées dans la zone de briques
+*)
 
 let brick_get(game, i , j : t_brick_kind array array * int * int) : t_brick_kind =
   if i < 0 || j < 0 || i >= Array.length(game) || j >= Array.length(game.(0)) (*vérifie que i, j sont à l'intèrieur de bricks*)
   then BK_empty 
-  else game.(i).(j)(*accede a bricks a x, y et renvoie son type*)
+  else game.(i).(j) (*accede a bricks a x, y et renvoie son type*)
 ;;
  
+(**
+  Cette fonction réalise des modifications dans la zone de brique pour faire évoluer une brique comme si elle était touchée 
+  par une balle.
+
+  @author Edouard GONET
+  @param game représente une matrice de type t_brick_kind array array 
+  @param i coordonée qui représente l'indice de ligne de la matrice game
+  @param j coordonée qui représente l'indice de ligne de la matrice game
+  @return retourne le type d'une brique après avoir été touchée par une balle
+*)
+
 let brick_hit(game, i, j : t_brick_kind array array * int * int) : t_brick_kind =
   if (i >= 0 && j >= 0 && i < Array.length(game) && j < Array.length(game.(0))) 
   then
@@ -322,6 +377,16 @@ let brick_hit(game, i, j : t_brick_kind array array * int * int) : t_brick_kind 
   else BK_empty
 ;;
        
+(**
+  Cette fonction envoie une couleur en fonction du type de brique qu'elle a.  
+  
+  @author Hasna AMID
+  @param game représente une matrice de type t_brick_kind array array 
+  @param i coordonée qui représente l'indice de ligne de la matrice game
+  @param j coordonée qui représente l'indice de ligne de la matrice game
+  @return retourne la couleur d'une brique associé son type 
+*)
+
 let brick_color(game, i, j : t_brick_kind array array * int * int) : t_camlbrick_color =
   if game.(i).(j) = BK_simple 
   then YELLOW
