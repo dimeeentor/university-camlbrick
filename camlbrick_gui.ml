@@ -1,7 +1,7 @@
-(* #directory "+labltk";;
+#directory "+labltk";;
 #load "labltk.cma";;
 
-#mod_use "camlbrick.ml";; *)
+#mod_use "camlbrick.ml";; 
 
 (* https://who.rocq.inria.fr/Francois.Thomasset/Labltk/Tutoriel_FT/ *)
 
@@ -151,7 +151,7 @@ let rec cbg_animate_action param game cbgui () =
 let cbg_canvas_key_press game (event_info : Tk.eventInfo) =
   (* print_string ("Key: "^(event_info.ev_KeySymString)^" : ");
   print_endline("KeyCode: "^(string_of_int (event_info.ev_KeySymInt))); *)
-  canvas_keypressed(game, (event_info.ev_KeySymString),(event_info.ev_KeySymInt))
+  canvas_keypressed(game, (event_info.ev_KeySymString),(event_info.ev_KeySymInt)) (*changer erreur array*)
 ;;
 
 let cbg_canvas_key_release game (event_info : Tk.eventInfo) =
