@@ -1,16 +1,15 @@
-(**
-Ce module Camlbrick représente le noyau fonctionnel du jeu de casse-brique nommé <b>camlbrick</b>
+(** Ce module Camlbrick représente le noyau fonctionnel du jeu de casse-brique nommé <b>camlbrick</b>
 (un jeu de mot entre le jeu casse-brique et le mot ocaml).
 
 Le noyau fonctionnel consiste à réaliser l'ensemble des structures et autres fonctions capables
 d'être utilisées par une interface graphique. Par conséquent, dans ce module il n'y a aucun
 aspect visuel! Vous pouvez utiliser le mode console.
 
-Le principe du jeu de casse-brique consiste à faire disparaître toutes les briques d'un make_camlbrickiveau
+Le principe du jeu de casse-brique consiste à faire disparaître toutes les briques d'un niveau
 en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utilisateur.
 
 @author Edouard GONET
-@author Dmytro HOCHARENCKO
+@author Dmytro HONCHARENKO
 @author Aya GUEMMIE
 @author Hasna AMID 
 
@@ -25,13 +24,13 @@ en utilisant les rebonds d'une balle depuis une raquette contrôlée par l'utili
 let frames = ref 0;;
 
 (**
-  type énuméré représentant les couleurs gérables par notre moteur de jeu. Vous ne pouvez pas modifier ce type!
+  Type [t_camlbrick_color] : type énuméré représentant les couleurs gérables par notre moteur de jeu. Vous ne pouvez pas modifier ce type!
   @deprecated Ne pas modifier ce type! 
 *)
 type t_camlbrick_color = WHITE | BLACK | GRAY | LIGHTGRAY | DARKGRAY | BLUE | RED | GREEN | YELLOW | CYAN | MAGENTA | ORANGE | LIME | PURPLE;;
     
 (**
-  Cette structure regroupe tous les attributs globaux,
+  [t_camlbrick_param] : Cette structure regroupe tous les attributs globaux,
   pour paramétrer notre jeu vidéo.
   <b>Attention:</b> Il doit y avoir des cohérences entre les différents paramètres:
   <ul>
@@ -56,7 +55,7 @@ type t_camlbrick_param = {
   paddle_init_height : int; (** hauteur initiale de la raquette *)
     
   time_speed : int ref; (** indique l'écoulement du temps en millisecondes (c'est une durée approximative) *)
-  }
+}
 ;;
     
 (** 
@@ -66,33 +65,30 @@ type t_camlbrick_param = {
 type t_brick_kind = BK_empty | BK_simple | BK_double | BK_block | BK_bonus;;
     
 (**
-  Cette fonction renvoie le type de brique pour représenter les briques de vide.
+  [make_empty_brick] : Cette fonction renvoie le type de brique pour représenter les briques de vide.
   C'est à dire, l'information qui encode l'absence de brique à un emplacement sur la grille du monde.
+
   @return Renvoie le type correspondant à la notion de vide.
   @deprecated  Cette fonction est utilisé en interne.    
 *)
-let make_empty_brick() : t_brick_kind = 
-  BK_empty
-;;
+let make_empty_brick() : t_brick_kind = BK_empty;;
     
 (** 
-  Enumeration des différentes tailles des billes. 
-  La taille  normale d'une bille est [BS_MEDIUM]. 
+  Type [t_ball_size] Enumeration des différentes tailles des billes. La taille  normale d'une bille est [BS_MEDIUM]. 
       
   Vous pouvez ajouter d'autres valeurs sans modifier les valeurs existantes.
 *)
 type t_ball_size = BS_SMALL | BS_MEDIUM | BS_BIG;;
       
 (** 
-  Enumeration des différentes taille de la raquette. Par défaut, une raquette doit avoir la taille
-  [PS_SMALL]. 
+  Type [t_paddle_size] : Enumeration des différentes taille de la raquette. Par défaut, une raquette doit avoir la taille [PS_SMALL]. 
     
   Vous pouvez ajouter d'autres valeurs sans modifier les valeurs existantes.
 *)
 type t_paddle_size = PS_SMALL | PS_MEDIUM | PS_BIG;;
     
 (** 
-  Enumération des différents états du jeu. Nous avons les trois états de base:
+  Type [t_gamestate] : Enumération des différents états du jeu. Nous avons les trois états de base:
   <ul>
   <li>[GAMEOVER]: qui indique si une partie est finie typiquement lors du lancement du jeu</li>
   <li>[PLAYING]: qui indique qu'une partie est en cours d'exécution</li>
@@ -106,38 +102,57 @@ type t_gamestate = GAMEOVER | PLAYING | PAUSING;;
     
 (**
   Enumération des positions x et y d'un vecteur
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID 
 *)
-type t_vec2 = {dx : int; dy : int} ;; 
+type t_vec2 = {
+  dx : int; 
+  dy : int
+}
+;; 
   
 (**
-  Cette fonction permet de créer un vecteur 2D à partir de deux entiers.
+  [make_vec2] : Cette fonction permet de créer un vecteur 2D à partir de deux entiers.
   Les entiers représentent la composante en X et en Y du vecteur.
     
   Vous devez modifier cette fonction.
-  @autor Edouard GONET
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID 
   @param x première composante du vecteur
   @param y seconde composante du vecteur
   @return Renvoie le vecteur dont les composantes sont (x,y).
 *)
-let make_vec2(x, y : int * int) : t_vec2 = 
-  {dx = x; dy = y}
+let make_vec2(x, y : int * int) : t_vec2 = {
+  dx = x; 
+  dy = y
+}
 ;;
     
 (**
-  Cette fonction renvoie un vecteur qui est la somme des deux vecteurs donnés en arguments.
-
-  @autor Dmytro Honcharenko
+  [vec2_add] : Cette fonction renvoie un vecteur qui est la somme des deux vecteurs donnés en arguments.
+  
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID 
   @param a premier vecteur
   @param b second vecteur
   @return Renvoie un vecteur égale à la somme des vecteurs.
 *)
-let vec2_add(a,b : t_vec2 * t_vec2) : t_vec2 =
-  {dx = a.dx + b.dx; dy = a.dy + b.dy}
+let vec2_add(a, b : t_vec2 * t_vec2) : t_vec2 = {
+  dx = a.dx + b.dx; 
+  dy = a.dy + b.dy
+}
 ;;
      
 (**
-  Cette fonction renvoie un vecteur égale à la somme d'un vecteur
-  donné en argument et un autre vecteur construit à partir de (x,y).
+  [vec2_add_scalar] : Cette fonction calcul la somme des composantes du vecteur a et du vecteur construit à partir de (x,y).
       
   Cette fonction est une optimisation du code suivant (que vous ne devez pas faire en l'état):
   {[
@@ -146,58 +161,74 @@ let vec2_add(a,b : t_vec2 * t_vec2) : t_vec2 =
     ;;
   ]}
     
-  @autor Dmytro Honcharenko
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID 
   @param a premier vecteur
   @param x composante en x du second vecteur
   @param y composante en y du second vecteur
   @return Renvoie un vecteur qui est la résultante du vecteur 
 *)
-let vec2_add_scalar(a,x,y : t_vec2 * int * int) : t_vec2 = {
-  dx = a.dx + x; dy = a.dy + y
+let vec2_add_scalar(a, x, y : t_vec2 * int * int) : t_vec2 = {
+  dx = a.dx + x; 
+  dy = a.dy + y
 }
 ;;
     
 (**
-  Cette fonction calcul un vecteur où 
-  ses composantes sont la résultante de la multiplication  des composantes de deux vecteurs en entrée.
+  [vec2_mult] : Cette fonction renvoie un vecteur qui est le produit des deux vecteurs donnés en arguments.
+  
   Ainsi,
   {[
     c_x = a_x * b_x
     c_y = a_y * b_y
   ]}
 
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
   @author Hasna AMID 
   @param a premier vecteur
   @param b second vecteur
   @return Renvoie un vecteur qui résulte de la multiplication des composantes. 
 *)
-let vec2_mult(a,b : t_vec2 * t_vec2) : t_vec2 = {
-  dx = a.dx * b.dx; dy = a.dy * b.dy
+let vec2_mult(a, b : t_vec2 * t_vec2) : t_vec2 = {
+  dx = a.dx * b.dx; 
+  dy = a.dy * b.dy
 }
 ;;
    
 (**
-  Cette fonction calcul la multiplication des composantes du vecteur a et du vecteur construit à partir de (x,y).
-  Cette fonction est une optimisation du code suivant (que vous ne devez pas faire en l'état):
+  [vec2_mult_scalar] Cette fonction calcul la multiplication des composantes du vecteur a et du vecteur construit à partir de (x,y). Cette fonction est une optimisation du code suivant (que vous ne devez pas faire en l'état):
   {[
     let vec2_mult_scalar(a,x,y : t_vec2 * int * int) : t_vec2 =
       vec2_mult(a, make_vec2(x,y))
     ;;
   ]}
 
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
   @author Aya GUEMMIE
+  @author Hasna AMID 
   @param a vecteur de type t_vec2
   @param x entier qui va multiplier le scalaire du vecteur a 
   @param y entier qui va multiplier le scalaire du vecteur a 
   @return retourne un nouveau vecteur avec la multiplications des correspondantes du vecteurs a 
 *)
-let vec2_mult_scalar(a,x,y : t_vec2 * int * int) : t_vec2 = {
+let vec2_mult_scalar(a, x, y : t_vec2 * int * int) : t_vec2 = {
   dx = a.dx * x; 
   dy = a.dy * y
-};;
+}
+;;
   
 (**
-  Cette structure regroupe tous les attributs globaux, pour paramétrer notre balle.
+  Type [t_ball] : représente la balle du jeu.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID 
 *)
 type t_ball = {
   position : t_vec2 ref; (**Position de la balle*)
@@ -208,19 +239,27 @@ type t_ball = {
 };; 
 
 (**
-  Cette structure regroupe tous les attributs globaux, pour paramétrer notre raquette.
+  Type [t_paddle] : représente la raquette du jeu.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID 
 *)
 type t_paddle = {
   position : t_vec2 ref;
   size : t_paddle_size; (**Définit la taille de notre raquette*)
   speed : int ref; (**définit sa vitesse de déplacement*)
   x : int ref; (**Position au niveau de l'absisse*)
-  y : int ref; (**Position au niveau de l'ordonnée*)
 };;
 
-(**
-   Stock les paramètres de jeux. Ce type est utile dans la modélisation des opérations géométriques 2D, comme la modélisation 
-   de mouvement dans le jeux ou même le rendu graphique.
+(** 
+  Type [t_camlbrick] : représente l'état du jeu.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID 
 *)
 type t_camlbrick = {
   kind : t_brick_kind; (**Type de la brique*)
@@ -235,8 +274,21 @@ type t_camlbrick = {
 };;
 
 (**
-  Cette fonction construit le paramétrage du jeu, avec des informations personnalisable avec les contraintes du sujet.
-  Il n'y a aucune vérification et vous devez vous assurer que les valeurs données en argument soient cohérentes.
+  [make_camlbrick_param] : est une fonction qui renvoie un paramétrage de jeu par défaut. La fonction crée un paramétrage de jeu avec les valeurs suivantes :
+
+  - [world_width] : 800
+  - [world_bricks_height] : 600
+  - [world_empty_height] : 200
+  - [brick_width] : 40
+  - [brick_height] : 20
+  - [paddle_init_width] : 100
+  - [paddle_init_height] : 20
+  - [time_speed] : 20
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID 
   @return Renvoie un paramétrage de jeu par défaut      
 *)
 let make_camlbrick_param() : t_camlbrick_param = {
@@ -255,20 +307,24 @@ let make_camlbrick_param() : t_camlbrick_param = {
     
     
 (**
-  Cette fonction extrait le paramétrage d'un jeu à partir du jeu donné en argument.
+  [param_get] : est une fonction qui renvoie le paramétrage actuel du jeu. La fonction prend en paramètre une structure de type [t_camlbrick] et renvoie le paramétrage actuel du jeu.
 
-  @author Aya GUEMMI 
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game jeu en cours d'exécution.
   @return Renvoie le paramétrage actuel.
 *)
-let param_get(game : t_camlbrick) : t_camlbrick_param =
-  game.param
-;;
+let param_get(game : t_camlbrick) : t_camlbrick_param = game.param;;
 
 (**
-  Cette fonction génère aléatoirement un type de brique parmi plusieurs types prédéfinis.
+  [generate_bricks] : est une fonction qui génère un type de brique aléatoire. La fonction utilise la fonction [Random.int] pour générer un nombre aléatoire entre 0 et 99. En fonction de la valeur générée, la fonction renvoie un type de brique aléatoire parmi les types suivants :
 
   @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @return un type de brique choisi aléatoirement
 *)
 let generate_bricks() : t_brick_kind = 
@@ -291,11 +347,14 @@ let generate_bricks() : t_brick_kind =
 ;;
 
 (**
-  Cette fonction va créer une grille de briques choisis aléatoirement avec les dimensions données.
-  
+  [make_bricks] : est une fonction qui crée un tableau 2D de types de briques avec des dimensions de [a] lignes et [b] colonnes. Chaque élément du tableau est initialisé avec la valeur [BK_simple]. La fonction génère un type de brique aléatoire à l'aide de la fonction [generate_bricks] et l'affecte à chaque élément du tableau.
+
   @author Edouard GONET
-  @param a
-  @param b 
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param a le nombre de lignes dans le tableau 2D.
+  @param b le nombre de colonnes dans le tableau 2D.
   @return renvoie un tableau de brique
 *)
 let make_bricks(a, b : int * int) : t_brick_kind array array = 
@@ -314,15 +373,18 @@ let make_bricks(a, b : int * int) : t_brick_kind array array =
 ;; 
 
 (**
-  Cette fonction crée une nouvelle balle avec la position et la taille spécifiées.
+  [make_ball] : est une fonction qui crée une balle avec une position [(0, 0)], une taille [BS_SMALL] et une vitesse [(0, 0)]. La fonction renvoie une balle correctement initialisée.
 
-  @author
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param x entiers représentant les coordonnées de la position initiale de la balle
   @param y entiers représentant les coordonnées de la position initiale de la balle
   @param size indique la taille de la balle 
   @return retourne une nouvelle instance de la structure t_ball, qui représente une balle dans le jeu
 *)
-let make_ball(x,y, size : int * int * t_ball_size) : t_ball = {
+let make_ball(x, y, size : int * int * t_ball_size) : t_ball = {
   position = ref (make_vec2 (0, 0));
   frame = make_vec2 (0, 0);
   size = size;
@@ -331,7 +393,12 @@ let make_ball(x,y, size : int * int * t_ball_size) : t_ball = {
 };;
 
 (**
-  Cette fonction crée une raquette par défaut au milieu de l'écran et de taille normal.  
+  [make_paddle] : est une fonction qui crée une raquette avec une position [(0, 0)], une taille [PS_SMALL] et une vitesse [1]. La fonction renvoie une raquette correctement initialisée.
+  
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @deprecated Cette fonction est là juste pour le debug ou pour débuter certains traitements de test.
 *)
 let make_paddle () : t_paddle = {
@@ -339,14 +406,15 @@ let make_paddle () : t_paddle = {
   size = PS_SMALL;
   speed = ref 1;
   x = ref 1;
-  y = ref 1
 };;     
 
 (**
-  Cette fonction crée une nouvelle structure qui initialise le monde avec aucune brique visible.
-  Une raquette par défaut et une balle par défaut dans la zone libre.
+  [make_camlbrick] : est une fonction qui renvoie un jeu correctement initialisé. La fonction crée un jeu de type t_camlbrick avec une balle, une raquette et des briques. La balle est initialisée avec une position [(395, 750)] et une taille [BS_SMALL]. La raquette est initialisée avec une taille [PS_SMALL]. Les briques sont initialisées avec une largeur de [20] et une hauteur de [30]. La fonction renvoie un jeu correctement initialisé.
 
   @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @return Renvoie un jeu correctement initialisé
 *)
 let make_camlbrick() : t_camlbrick = 
@@ -367,12 +435,14 @@ let make_camlbrick() : t_camlbrick =
 ;;
 
 (**
-  Fonction utilitaire qui permet de traduire l'état du jeu sous la forme d'une chaîne de caractère.
-  Cette fonction est appelée à chaque frame, et est affichée directement dans l'interface graphique.
+  [string_of_gamestate] : est une fonction qui renvoie une chaîne de caractères représentant l'état du jeu. La fonction prend en paramètre une structure de type t_camlbrick et renvoie une chaîne de caractères représentant l'état du jeu.
       
   Vous devez modifier cette fonction.
     
-  @autho Hasna AMID
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représente le jeu en cours d'exécution.
   @return Renvoie la chaîne de caractère représentant l'état du jeu.
 *)
@@ -399,26 +469,37 @@ let string_of_gamestate(game : t_camlbrick) : string = (* Itération 1,2,3 et 4 
 ;;
     
 (**
-  Cette fonction renvoie le type de brique à partir des coordonnées dans la zone de briques
-  en vérifiant si les paramètres se trouve à l'intérieur du tableau bricks.
-    
-  @autor Edouard GONET 
+  [brick_get] : est une fonction qui renvoie le type de brique à partir des coordonnées dans la zone de briques. La fonction prend en paramètre une matrice de type t_brick_kind array array, un entier i et un entier j.
+
+  - [game] est l'état du jeu représenté par une structure t_camlbrick.
+  - [i] est l'index de la ligne de la brique.
+  - [j] est l'indice de colonne de la brique.
+
+  La fonction vérifie d'abord si les indices (i, j) sont compris dans les limites du tableau de briques. Si c'est le cas, elle renvoie BK_empty, ce qui indique que la brique est vide. Sinon, elle accède à la brique à la position (i, j) dans le tableau de jeu et renvoie son type.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID 
   @param game représente une matrice de type t_brick_kind array array
   @param i coordonnée d'une brique dans le tableau 
   @param j coordonnée d'une brique dans le tableau
   @return renvoie le type de brique à partir des coordonnées dans la zone de briques
 *)
 let brick_get(game, i , j : t_camlbrick * int * int) : t_brick_kind =
-  if i < 0 || j < 0 || i >= Array.length(game.array) || j >= Array.length(game.array.(0)) (*vérifie que i, j sont à l'intèrieur de bricks*)
+  (* vérifie que i, j sont à l'intèrieur de bricks *)
+  if i < 0 || j < 0 || i >= Array.length(game.array) || j >= Array.length(game.array.(0)) 
   then BK_empty 
-  else game.array.(i).(j) (*accede a bricks a x, y et renvoie son type*)
+  else game.array.(i).(j) (* accede a bricks a x, y et renvoie son type *)
 ;;
  
 (**
-  Cette fonction réalise des modifications dans la zone de brique pour faire évoluer une brique comme si elle était touchée 
-  par une balle.
+  [brick_hit] : Cette fonction réalise des modifications dans la zone de brique pour faire évoluer une brique comme si elle était touchée par une balle.
 
   @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représente une matrice de type t_brick_kind array array 
   @param i coordonée qui représente l'indice de ligne de la matrice game
   @param j coordonée qui représente l'indice de ligne de la matrice game
@@ -442,45 +523,56 @@ let brick_hit(game, i, j : t_camlbrick * int * int) : t_brick_kind =
   else BK_empty
 ;;
        
-(**
-  Cette fonction envoie une couleur en fonction du type de brique qu'elle a.  
-  
+(** 
+  [brick_color] : est une fonction qui renvoie la couleur d'une brique dans le tableau de jeu à la position (i, j).
+
+  La fonction vérifie la valeur de la brique dans le tableau de jeu à la position (i, j) et l'associe à une couleur correspondante :
+  - Si la brique est BK_simple, elle renvoie JAUNE.
+  - Si la brique est BK_double, elle renvoie la couleur BLEUE.
+  - Si la brique est BK_bonus, elle renvoie la couleur VERTE.
+  - Si la brique est BK_block, elle renvoie BLANC.
+  - Si la brique a une autre valeur, elle renvoie NOIR.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
   @author Hasna AMID
   @param game représente une matrice de type t_brick_kind array array 
   @param i coordonée qui représente l'indice de ligne de la matrice game
   @param j coordonée qui représente l'indice de ligne de la matrice game
-  @return retourne la couleur d'une brique associé son type 
+  @return retourne la couleur d'une brique associé son type
 *)
-let brick_color(game, i, j : t_camlbrick * int * int) : t_camlbrick_color =
+let brick_color (game, i, j : t_camlbrick * int * int) : t_camlbrick_color =
   if game.array.(i).(j) = BK_simple 
   then YELLOW
-  else 
-    if game.array.(i).(j) = BK_double 
-    then BLUE
-    else 
-      if game.array.(i).(j) = BK_bonus 
-      then GREEN
-      else 
-        if game.array.(i).(j) = BK_block
-        then WHITE
-        else BLACK
+  else if game.array.(i).(j) = BK_double 
+  then BLUE
+  else if game.array.(i).(j) = BK_bonus 
+  then GREEN 
+  else if game.array.(i).(j) = BK_block
+  then WHITE
+  else BLACK
 ;;
 
-(**
-  Cette fonction renvoie la position gauche du rectangle sympolisant la position de la raquette 
-
-  @author 
+(** 
+  [paddle_x] : Cette fonction renvoie la position [x] de la palette. Elle renvoie la valeur de la position [x] de la palette en fonction de la position [x] de la raquette.
+  
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
-  @return renvoie la position gauche du rectangle qui symbolise la raquette
+  @return Coordonnée x de la palette. 
 *)
-let paddle_x (game: t_camlbrick) : int =
-  !(game.pad.x) (* position horizontale de la raquette *)
-;;
+let paddle_x (game: t_camlbrick) : int = !(game.pad.x);;
 
 (**
-  Cette fonction renvoie la largeur en pixel du rectangle 
+  [paddle_size_pixel] : Cette fonction renvoie la largeur en pixel du rectangle. 
 
-  @author
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @return retourne un entier qui représente la largeur en pixels de la raquette en fonction de sa taille 
 *)
@@ -494,45 +586,50 @@ let paddle_size_pixel(game : t_camlbrick) : int =
 ;;
     
 (**
-  Cette fonction va nous permettre de deplacer la raquette vers la gauche sur l'axe des abscisses.
+  [paddle_move_left] : La fonction déplace la raquette vers la gauche en fonction de la vitesse de la raquette. Elle vérifie si la raquette est déjà à la limite de la fenêtre. Si la raquette est à la limite de la fenêtre, elle ne la déplace pas. Sinon, elle déplace la raquette vers la gauche en fonction de la vitesse de la raquette.
   
-  @author
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @return ne retourne pas de valeur, elle modifie l'état du jeu
 *)
 let paddle_move_left(game : t_camlbrick) : unit = 
-  let move_left : int = game.param.paddle_init_width in
   if paddle_x(game) <= 0
   then ()
   else
       if paddle_x(game) > 0
-      then game.pad.x := !(game.pad.x) - move_left
+      then game.pad.x := !(game.pad.x) - 20
       else ()
 ;;
 
 (**
-  Cette fonction va nous permettre de deplacer la raquette vers la droite sur l'axe des abscisses.
+  [paddle_move_right] : Cette fonction va nous permettre de deplacer la raquette vers la droite sur l'axe des abscisses.
   
-  @author
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @return ne retourne pas de valeur, elle modifie l'état du jeu
 *)
 let paddle_move_right(game : t_camlbrick) : unit = 
-  let move_right : int = game.param.paddle_init_width in
   if paddle_x(game) >= 0
   then ()
   else
       if paddle_x(game) < 0
-      then game.pad.x := !(game.pad.x) + move_right
+      then game.pad.x := !(game.pad.x) + 20
       else ()
 ;;
 
 (**
-  Cette fonction indique si la partie en cours possède des balles. Nous vérifions si la brique actuelle (current_brick) 
-  contient des balles. Si c'est le cas, nous renvoyons true. Sinon, nous continuons de vérifier les briques restantes 
-  dans la liste check. Si aucune brique ne contient de balles, nous renvoyons false.
-  
-  @author
+  [has_ball] : La fonction vérifie si une balle est présente dans le jeu. Elle parcourt la liste de balles et vérifie si la liste est vide. La fonction renvoie vrai si une balle est présente dans le jeu, sinon elle renvoie faux.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @param check parcourt les briques du jeu et vérifie si l'une d'entre elles contient des balles
   @return retourne un booléen indiquant si le jeu contient au moins une balle
@@ -552,9 +649,12 @@ let rec has_ball(game : t_camlbrick) : bool =
 ;; 
 
 (**
-  Cette fonction compte le nombre total de balles dans le jeu en utilisant une fonction récursives internes pour parcourirs la liste de brique.
+  [balls_count] : La fonction compte le nombre total de balles en jeu en parcourant la liste de briques. Elle récupère le nombre de balles de chaque brique et les additionne pour obtenir le nombre total de balles en jeu. La fonction renvoie le nombre total de balles en jeu.
 
-  @author
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @return retourne le nombre total de balle en jeux
 *)
@@ -569,9 +669,12 @@ let balls_count(game : t_camlbrick) : int =
 ;; 
 
 (**
-  Cette fonction récupère toutes les balles présentes dans le jeu en utilisant une fonction récursive interne sur le même principe que la fonction précédente.
+  [balls_get] : La fonction récupère toutes les balles présentes dans le jeu en parcourant la liste de briques. Elle récupère les balles de chaque brique et les ajoute à une liste de balles. La fonction renvoie la liste de balles obtenue après avoir parcouru toutes les briques du jeu.
 
-  @author
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @return retourne une liste de toutes les balles présentes dans le jeu
 *)
@@ -587,9 +690,12 @@ let balls_get(game : t_camlbrick) : t_ball list =
 ;; 
 
 (**
-  Cette fonction récupère une balle spécifique dans le jeu représenté par le type t_camlbrick en fonction de l'indice fourni. 
-  
-  @author
+  [ball_get] : La fonction récupère une balle spécifique du jeu en fonction de l'indice fourni. Elle parcourt la liste de briques et récupère la balle à l'indice spécifié. La fonction renvoie la balle spécifique du jeu en fonction de l'indice fourni.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @param i qui est l'indice de la balle que l'on souhaite récupérer.
   @return retourne la balle spécifique du jeu en fonction de l'indice fourni
@@ -599,22 +705,22 @@ let ball_get (game, i : t_camlbrick * int) : t_ball =
     if index < 0 || bricks = [] 
     then failwith "Invalid index or empty game"
     else
-
       let first_brick = List.hd(bricks) in
       let brick_ball_count = List.length(first_brick.balls) in
-
       if index < brick_ball_count 
       then List.nth(first_brick.balls) index
       else get_ball (List.tl(bricks)) (index - brick_ball_count)
-
   in
   get_ball [game] i
 ;; 
 
 (**
-  Cette fonction extrait et retourne la position horizontale de la balle spécifiée dans le jeu. 
+  [ball_x] : La fonction utilise la fonction de référence [ball.position] pour accéder à la position de la balle et renvoyer sa coordonnée horizontale [dx].
 
-  @author
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @param ball représentant la balle dont nous voulons obtenir la position
   @return retourne la valeur de position horizontale de la balle
@@ -624,9 +730,14 @@ let ball_x(game, ball : t_camlbrick * t_ball) : int =
 ;;
 
 (**
-  Cette fonction extrait et retourne la position verticale de la balle spécifiée dans le jeu. 
+  [ball_y] Cette fonction extrait et retourne la position verticale de la balle spécifiée dans le jeu. 
 
-  @author
+  La fonction extrait la position verticale de la balle spécifiée dans le jeu en accédant à la valeur de la coordonnée y de la position de la balle. La fonction utilise la fonction de référence [ball.position] pour accéder à la position de la balle et en extraire la coordonnée y.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @param ball représentant la balle dont nous voulons obtenir la position
   @return retourne la valeur de position verticale de la balle
@@ -636,54 +747,88 @@ let ball_y(game, ball : t_camlbrick * t_ball) : int =
 ;;
 
 (**
-  cette fonction retourne la taille en pixels de la balle spécifiée dans le jeu, en fonction de sa taille définie.
+  [ball_size_pixel] Cette fonction retourne la taille en pixels de la balle spécifiée dans le jeu, en fonction de sa taille définie.
+
+  La fonction vérifie la taille de la balle spécifiée dans le jeu et renvoie la taille en pixels correspondante :
+  - Si la balle est de taille BS_SMALL, elle renvoie 10.
+  - Si la balle est de taille BS_MEDIUM, elle renvoie 20.
+  - Si la balle est de taille BS_BIG, elle renvoie 30.
   
-  @author
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @param ball représentant la balle dont nous voulons obtenir la taille en pixels
   @return retourne un entier représentant la taille en pixels de la balle 
 *)
 let ball_size_pixel(game, ball : t_camlbrick * t_ball) : int =
-if game.ball.size = BS_SMALL 
-  then 10
-  else 
-    if game.ball.size = BS_MEDIUM 
-    then 20
-    else 30
+  if game.ball.size = BS_SMALL then 10
+  else if game.ball.size = BS_MEDIUM then 20
+  else 30
 ;;
 
 (**
-  cette fonction extrait et retourne la couleur de la balle
+  [ball_color] Cette fonction extrait et retourne la couleur de la balle.
 
-  @author
+  La fonction vérifie la taille de la balle et renvoie la couleur correspondante :
+  - Si la balle est de taille BS_SMALL, elle renvoie LIME.
+  - Si la balle est de taille BS_MEDIUM, elle renvoie LIGHTGRAY.
+  - Si la balle est de taille BS_BIG, elle renvoie GRAY.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game représentant l'état actuel du jeu
   @param ball représentant la balle dont nous voulons obtenir la couleur
   @return retourne la couleur de la balle en jeu
 *)
 let ball_color(game, ball : t_camlbrick * t_ball) : t_camlbrick_color =  
-  if ball.size = BS_SMALL 
-  then LIME 
-  else  
-    if ball.size = BS_MEDIUM 
-    then LIGHTGRAY 
-    else GRAY 
+  if ball.size = BS_SMALL then LIME 
+  else if ball.size = BS_MEDIUM then LIGHTGRAY 
+  else GRAY 
 ;;
 
+(** 
+  [ball_modif_speed] modifie la vitesse de la balle dans le jeu en ajoutant le vecteur [dv] à sa vitesse.
 
-let ball_modif_speed(game, ball, dv : t_camlbrick * t_ball * t_vec2) : unit =
+  La fonction ajoute le vecteur [dv] à la vitesse de la balle en modifiant la valeur de la vitesse de la balle. La fonction utilise la fonction [vec2_add] pour ajouter le vecteur [dv] à la vitesse de la balle. La fonction modifie la valeur de la vitesse de la balle en utilisant la fonction de référence [ball.velocity] pour accéder à la vitesse de la balle et la modifier.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param game est l'état actuel du jeu
+  @param ball la balle est la balle à modifier
+  @param dv est le vecteur à ajouter à la vitesse de la balle
+ *)
+let ball_modif_speed (game, ball, dv : t_camlbrick * t_ball * t_vec2) : unit =
   ball.velocity := vec2_add (!(ball.velocity), dv)
 ;;
 
+(** 
+  [ball_modif_speed_sign] modifie la vitesse de la balle dans le jeu en multipliant sa vitesse par le scalaire [sv].
 
-let ball_modif_speed_sign(game, ball, sv : t_camlbrick * t_ball * t_vec2) : unit =
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param game est l'état actuel du jeu
+  @param ball la balle est la balle à modifier
+  @param sv est le scalaire par lequel il faut multiplier la vitesse de la balle
+*)
+let ball_modif_speed_sign (game, ball, sv : t_camlbrick * t_ball * t_vec2) : unit =
   ball.velocity := vec2_mult (!(ball.velocity), sv)
 ;;
 
 (**
-  cette fonction détermine si un point spécifié est situé à l'intérieur d'un cercle donné en comparant la distance entre le point et 
-  le centre du cercle à la valeur du rayon. Si la distance est inférieure au rayon, le point est à l'intérieur du cercle, sinon il est à l'extérieur.
+  [is_inside_circle] Cette fonction détermine si un point spécifié est situé à l'intérieur d'un cercle donné en comparant la distance entre le point et le centre du cercle à la valeur du rayon. Si la distance est inférieure au rayon, le point est à l'intérieur du cercle, sinon il est à l'extérieur.
 
-  @author
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param cx coordonnées horizontale du centre du cercle
   @param cy coordonnées verticale du centre du cercle
   @param rad est le rayon du cercle 
@@ -698,10 +843,12 @@ let is_inside_circle(cx, cy, rad, x, y : int * int * int * int * int) : bool =
 ;;
     
 (**
-  cette fonction vérifie si un point spécifié est situé à l'intérieur d'un quadrilatère défini par ses coins, en comparant les coordonnées 
-  du point avec les coordonnées des coins du quadrilatère.
+  [is_inside_quad] Cette fonction vérifie si un point spécifié est situé à l'intérieur d'un quadrilatère défini par ses coins, en comparant les coordonnées du point avec les coordonnées des coins du quadrilatère.
 
-  @author 
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param x1 coordonnées des coins du quadrilatère
   @param y1 coordonnées des coins du quadrilatère
   @param x2 coordonnées des coins du quadrilatère
@@ -714,6 +861,18 @@ let is_inside_quad(x1, y1, x2, y2, x, y : int * int * int * int * int * int) : b
   x >= x1 && x <= x2 && y >= y1 && y <= y2
 ;;
 
+(**
+  La fonction [ball_remove_out_of_border] permet de supprimer de la liste [balls] les balles qui se trouvent en dehors des limites du jeu [game].
+  
+  La fonction parcourt la liste des boules et vérifie si les coordonnées de chaque boule se trouvent à l'intérieur des limites du jeu. Si une balle se trouve à l'intérieur des limites, elle est conservée dans la liste résultante. Dans le cas contraire, elle est supprimée de la liste.
+  
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param game est l'état actuel du jeu
+  @param balls est la liste des balles à vérifier
+*)
 let ball_remove_out_of_border (game, balls : t_camlbrick * t_ball list) : t_ball list =
   let rec remove_out (game, balls) : t_ball list =
     if balls = [] 
@@ -729,6 +888,19 @@ let ball_remove_out_of_border (game, balls : t_camlbrick * t_ball list) : t_ball
   remove_out(game, balls)
 ;;
 
+(**
+  [ball_hit_paddle] est une fonction qui vérifie si la balle a touché la raquette dans le jeu.
+
+  La fonction commence par calculer les coordonnées du centre de la raquette à partir de ses coordonnées de coin. Ensuite, elle calcule les coordonnées des points du milieu de chaque côté de la raquette. Enfin, elle vérifie si la balle se trouve à l'intérieur d'un cercle de rayon égal à la taille de la balle centré sur l'un des points du milieu des côtés de la raquette. Si c'est le cas, la fonction renvoie true, sinon elle renvoie false.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param game est l'état actuel du jeu
+  @param ball est la balle à vérifier
+  @param paddle est la raquette à vérifier
+*)
 let ball_hit_paddle(game, ball, paddle : t_camlbrick * t_ball * t_paddle) : bool =
   let paddle_size : int = paddle_size_pixel(game) in
   let paddle_x : int = !(paddle.position).dx in
@@ -749,12 +921,20 @@ let ball_hit_paddle(game, ball, paddle : t_camlbrick * t_ball * t_paddle) : bool
     false
 ;;
 
-(* lire l'énoncé choix à faire *)
-let ball_hit_corner_brick(game,ball, i,j : t_camlbrick * t_ball * int * int) : bool =
-  (* Itération 3 *)
-  false
-;;
+(**
+  [ball_hit_corner_brick] est une fonction qui vérifie si la balle a touché le coin d'une brique dans le jeu.
 
+  La fonction commence par calculer les coordonnées du coin de la brique à partir de ses coordonnées de coin. Ensuite, elle vérifie si la balle se trouve à l'intérieur d'un cercle de rayon égal à la taille de la balle centré sur le coin de la brique. Si c'est le cas, la fonction renvoie true, sinon elle renvoie false.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param game est l'état actuel du jeu
+  @param ball est la balle à vérifier
+  @param i est l'indice de ligne de la brique
+  @param j est l'indice de colonne de la brique
+*)
 let ball_hit_corner_brick(game, ball, i, j : t_camlbrick * t_ball * int * int) : bool = 
   let brick_x = i * game.param.brick_width in 
   let brick_y = j * game.param.brick_height in 
@@ -766,6 +946,19 @@ let ball_hit_corner_brick(game, ball, i, j : t_camlbrick * t_ball * int * int) :
   else false
 ;;
 
+(**
+  [ball_hit_side_brick] Cette fonction vérifie si la balle a touché le côté d'une brique dans le jeu.
+
+  La fonction commence par calculer les coordonnées du centre de la brique à partir de ses coordonnées de coin. Ensuite, elle calcule les coordonnées des points du milieu de chaque côté de la brique. Enfin, elle vérifie si la balle se trouve à l'intérieur d'un cercle de rayon égal à la taille de la balle centré sur l'un des points du milieu des côtés de la brique. Si c'est le cas, la fonction renvoie true, sinon elle renvoie false.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param game est l'état actuel du jeu
+  @param ball est la balle à vérifier
+  @param i est l'indice de ligne de la brique
+*)
 let ball_hit_side_brick(game, ball, i, j: t_camlbrick * t_ball * int * int) : bool =
   let brick_x : int = j * game.param.brick_width in
   let brick_y : int = i * game.param.brick_height in
@@ -791,16 +984,32 @@ let ball_hit_side_brick(game, ball, i, j: t_camlbrick * t_ball * int * int) : bo
   !collision
 ;;
 
-let game_test_hit_balls(game, balls : t_camlbrick * t_ball list) : unit =
-  (* Itération 3 *)
+(* FILEPATH: /Users/dmytrohoncharenko/Documents/Programming/University/university-camlbrick/camlbrick.ml *)
+
+(** 
+  [game_test_hit_balls game balls] : est une fonction qui teste la collision entre le jeu et une liste de balles.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param game est l'état actuel du jeu
+  @param balls est la liste des balles à tester
+*)
+let game_test_hit_balls (game, balls : t_camlbrick * t_ball list) : unit =
+  (* Iteration 3 *)
   ()
 ;;
 
 (**
-  Cette fonction est appelée par l'interface graphique avec le jeu en argument et la position
+  [canvas_mouse_move] : Cette fonction est appelée par l'interface graphique avec le jeu en argument et la position
   de la souris dans la fenêtre lorsqu'elle se déplace. 
   Vous pouvez réaliser des traitements spécifiques, mais comprenez bien que cela aura
   un impact sur les performances si vous dosez mal les temps de calcul.
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game la partie en cours.
   @param x l'abscisse de la position de la souris
   @param y l'ordonnée de la position de la souris     
@@ -810,10 +1019,14 @@ let canvas_mouse_move(game,x,y : t_camlbrick * int * int) : unit =
 ;;
 
 (**
-  Cette fonction est appelée par l'interface graphique avec le jeu en argument et la position
+  [canvas_mouse_click_press] : Cette fonction est appelée par l'interface graphique avec le jeu en argument et la position
   de la souris dans la fenêtre lorsqu'un bouton est enfoncé. 
   Vous pouvez réaliser des traitements spécifiques, mais comprenez bien que cela aura
   un impact sur les performances si vous dosez mal les temps de calcul.
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game la partie en cours.
   @param button numero du bouton de la souris enfoncé.
   @param x l'abscisse de la position de la souris
@@ -824,10 +1037,14 @@ let canvas_mouse_click_press(game,button,x,y : t_camlbrick * int * int * int) : 
 ;;
 
 (**
-  Cette fonction est appelée par l'interface graphique avec le jeu en argument et la position
+  [canvas_mouse_click_release] : Cette fonction est appelée par l'interface graphique avec le jeu en argument et la position
   de la souris dans la fenêtre lorsqu'un bouton est relaché. 
   Vous pouvez réaliser des traitements spécifiques, mais comprenez bien que cela aura
   un impact sur les performances si vous dosez mal les temps de calcul.
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game la partie en cours.
   @param button numero du bouton de la souris relaché.
   @param x l'abscisse de la position du relachement
@@ -838,15 +1055,18 @@ let canvas_mouse_click_release(game,button,x,y : t_camlbrick * int * int * int) 
 ;;
 
 (**
-  Cette fonction est appelée par l'interface graphique lorsqu'une touche du clavier est appuyée.
-  Les arguments sont le jeu en cours, la touche enfoncé sous la forme d'une chaine et sous forme d'un code
-  spécifique à labltk.
+  [canvas_keypressed] : Cette fonction est appelée par l'interface graphique lorsqu'une touche du clavier est appuyée.
+  Les arguments sont le jeu en cours, la touche enfoncé sous la forme d'une chaine et sous forme d'un code spécifique à labltk.
   
   Le code fourni initialement permet juste d'afficher les touches appuyées au clavier afin de pouvoir
   les identifiées facilement dans nos traitements.
 
   Vous pouvez réaliser des traitements spécifiques, mais comprenez bien que cela aura
   un impact sur les performances si vous dosez mal les temps de calcul.
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID  
   @param game la partie en cours.
   @param keyString nom de la touche appuyée.
   @param keyCode code entier de la touche appuyée.   
@@ -871,15 +1091,18 @@ let canvas_keypressed(game, keyString, keyCode : t_camlbrick * string * int) : u
 ;;
 
 (**
-  Cette fonction est appelée par l'interface graphique lorsqu'une touche du clavier est relachée.
-  Les arguments sont le jeu en cours, la touche relachée sous la forme d'une chaine et sous forme d'un code
-  spécifique à labltk.
+  [canvas_keyreleased] : Cette fonction est appelée par l'interface graphique lorsqu'une touche du clavier est relachée.
+  Les arguments sont le jeu en cours, la touche relachée sous la forme d'une chaine et sous forme d'un code spécifique à labltk.
   
   Le code fourni initialement permet juste d'afficher les touches appuyées au clavier afin de pouvoir
   les identifiées facilement dans nos traitements.
 
   Vous pouvez réaliser des traitements spécifiques, mais comprenez bien que cela aura
   un impact sur les performances si vous dosez mal les temps de calcul.
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game la partie en cours.
   @param keyString nom de la touche relachée.
   @param keyCode code entier de la touche relachée.   
@@ -911,11 +1134,15 @@ let custom2_text() : string =
 ;;
 
 (**
-  Cette fonction est appelée par l'interface graphique lorsqu'on clique sur le bouton
+  [start_onclick] : Cette fonction est appelée par l'interface graphique lorsqu'on clique sur le bouton
   de la zone de menu et que ce bouton affiche "Start".
 
   Vous pouvez réaliser des traitements spécifiques, mais comprenez bien que cela aura
   un impact sur les performances si vous dosez mal les temps de calcul.
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game la partie en cours.
 *)
 let start_onclick(game : t_camlbrick) : unit =
@@ -927,48 +1154,65 @@ let start_onclick(game : t_camlbrick) : unit =
 ;;
 
 (**
-  Cette fonction est appelée par l'interface graphique lorsqu'on clique sur le bouton
+  [stop_onclick] : Cette fonction est appelée par l'interface graphique lorsqu'on clique sur le bouton
   de la zone de menu et que ce bouton affiche "Stop".
   
   Vous pouvez réaliser des traitements spécifiques, mais comprenez bien que cela aura
   un impact sur les performances si vous dosez mal les temps de calcul.
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
   @param game la partie en cours.
 *)
 let stop_onclick(game : t_camlbrick) : unit =
   if game.gamestate = PLAYING then
-    let games : t_camlbrick = { game with gamestate = PAUSING } in
+    let games : t_camlbrick = { game with gamestate = PAUSING } in 
     ()
   else
     failwith "le jeu n'est pas en cours"
 ;;
 
 (**
-  Cette fonction est appelée par l'interface graphique pour connaitre la valeur
-  du slider Speed dans la zone du menu.
+  [speed_get] : Cette fonction permet de récupérer la valeur de la vitesse du jeu. Elle est appelée par l'interface graphique pour obtenir la valeur de la vitesse du jeu.
 
   Vous pouvez donc renvoyer une valeur selon votre désir afin d'offrir la possibilité
   d'interagir avec le joueur.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param game la partie en cours.
 *)
-let speed_get(game : t_camlbrick) : int = 
-  !(game.speed)
-;;
+let speed_get(game : t_camlbrick) : int = !(game.speed);;
 
 (**
-  Cette fonction est appelée par l'interface graphique pour indiquer que le 
-  slide Speed dans la zone de menu a été modifiée. 
+  [speed_change] : Cette fonction permet de gérer le changement de la valeur du slider Speed. Elle est appelée par l'interface graphique lorsqu'une action est effectuée sur le slider Speed. Elle modifie la valeur de la vitesse du jeu en fonction de la valeur du slider Speed. Elle affiche également la nouvelle valeur de la vitesse du jeu. Vous pouvez ajouter des traitements spécifiques pour gérer le changement de la vitesse du jeu.
   
   Ainsi, vous pourrez réagir selon le joueur.
+
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param game la partie en cours.
+  @param xspeed la nouvelle valeur du slider Speed.
 *)
 let speed_change(game, xspeed : t_camlbrick * int) : unit=
   print_endline("Change speed : "^(string_of_int xspeed));
   game.speed := xspeed
 ;;
 
-(*
-  L'animation [animate_action game] met à jour la position de la balle dans l'état de jeu [game] en fonction de sa vitesse actuelle.
-  Il gère également les collisions avec les bords de l'écran en modifiant la direction de la vitesse de la balle si nécessaire.
+(**
+  [animate_action] : Cette fonction permet de gérer les actions du jeu en cours. Elle est appelée à chaque itération du jeu pour mettre à jour l'état du jeu. Elle modifie la position de la balle en fonction de sa vitesse et des collisions avec les bords de l'écran. Elle gère également les collisions de la balle avec les briques et la raquette. Elle met à jour l'état du jeu en fonction des actions effectuées.
 
-  - L'état de jeu [game] contient la balle et d'autres paramètres.
+  @author Edouard GONET
+  @author Dmytro HONCHARENKO
+  @author Aya GUEMMIE
+  @author Hasna AMID
+  @param game l'état actuel du jeu
+  @return ne retourne pas de valeur, elle modifie l'état du jeu
 *)
 let animate_action(game : t_camlbrick) : unit =  
   if game.gamestate = PLAYING then begin
