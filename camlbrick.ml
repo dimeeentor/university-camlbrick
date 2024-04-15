@@ -596,12 +596,15 @@ let paddle_size_pixel(game : t_camlbrick) : int =
   @return ne retourne pas de valeur, elle modifie l'état du jeu
 *)
 let paddle_move_left(game : t_camlbrick) : unit = 
-  if paddle_x(game) <= 0
-  then ()
+  if
+    paddle_x game > (paddle_size_pixel game) / 4 - game.param.world_width / 2
+  then
+    game.pad.position := { 
+      dx = !(game.pad.position).dx - 15; 
+      dy = !(game.pad.position).dy 
+  }
   else
-      if paddle_x(game) > 0
-      then game.pad.x := !(game.pad.x) - 20
-      else ()
+    ()
 ;;
 
 (**
@@ -615,12 +618,15 @@ let paddle_move_left(game : t_camlbrick) : unit =
   @return ne retourne pas de valeur, elle modifie l'état du jeu
 *)
 let paddle_move_right(game : t_camlbrick) : unit = 
-  if paddle_x(game) >= 0
-  then ()
+  if
+    paddle_x game > (paddle_size_pixel game) / 4 - game.param.world_width / 2
+  then
+    game.pad.position := { 
+      dx = !(game.pad.position).dx + 15; 
+      dy = !(game.pad.position).dy 
+  }
   else
-      if paddle_x(game) < 0
-      then game.pad.x := !(game.pad.x) + 20
-      else ()
+    ()
 ;;
 
 (**
